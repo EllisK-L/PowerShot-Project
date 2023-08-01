@@ -1,6 +1,44 @@
-@import './base.css';
+/* @import './base.css'; */
 
-#app {
+@import url('https://fonts.googleapis.com/css2?family=Handjet&display=swap');
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48
+}
+
+
+body{
+  background-color: #464A57;
+  padding: 2rem;
+  font-family: 'Handjet', cursive;
+  font-size: 24px;
+}
+
+.ps-row{
+  background-color: #545C5F;
+  color: lightgray;
+  padding: .5rem;
+  margin-bottom: .5rem;
+  border-radius: 6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+button{
+  /* background-color: black; */
+  border-style: solid;
+  border-width: 0px;
+}
+
+a {
+   text-decoration: none;
+   color: inherit; 
+  }
+
+/* #app {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -32,4 +70,4 @@ a,
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
-}
+} */

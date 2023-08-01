@@ -1,85 +1,97 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
+    <!-- <div v-if="token != null">
+      <h1>Logged in</h1>
+      <button @click="logout()">Logout</button>
+      <button @click="kill_token()">kill token</button>
+    </div> -->
+    <Nav :username="username"/>
   </header>
-
-  <RouterView />
+  <RouterView @loginEvent="refresh_login()" :token="token" :user_data="user_data"/>
 </template>
 
+<script>
+import { RouterLink, RouterView } from 'vue-router';
+import axios from 'axios';
+import Nav from './components/Nav.vue'
+export default {
+  components: {
+    Nav
+  },
+  methods: {
+    logout(){
+      localStorage.token = "";
+      this.token = null;
+    },
+    kill_token(){
+      localStorage.token = localStorage.token+"a2w323"
+      this.token = localStorage.token;
+    },
+    refresh_login(){
+      console.log("refersh_login")
+      this.token = localStorage.token
+      this.get_user_data();
+    },
+    get_user_data(){
+      const url = `${this.uri}/api/user/${this.token}`;
+      axios.get(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json;charset=UTF-8",
+          Authorization: `Token ${this.token}`
+        }
+      })
+      .then(({data}) => {
+        this.username = data.username
+        this.user_data = data
+        // Object.assign(this.user_data, data)
+
+      })
+      .catch((error) => {
+        console.log(`Error getting user info: ${error}`)
+      })
+    }
+  },
+  mounted(){
+    this.get_user_data()
+    // double check token is valid
+    if(this.token != null){
+
+      const url = `${this.uri}/api/user/${this.token}`;
+      axios.get(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json;charset=UTF-8",
+          Authorization: `Token ${this.token}`
+        }
+      })
+      .then(({data}) => {
+        console.log(data);
+
+      })
+      .catch((error) => {
+        localStorage.token = "";
+        this.token = null;
+        this.$router.push({name: 'login'});
+      })
+    }
+
+  },
+  data() {
+    let token = null;
+    if(localStorage.token){
+      token = localStorage.token
+    }
+    return {
+      token: token,
+      hide_nav: false,
+      uri: import.meta.env.VITE_APP_BASE_URI,
+      username: "",
+      user_data: {}
+    }
+  }
+}
+</script>
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
 </style>

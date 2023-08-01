@@ -8,7 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.2.47",
+    "axios": "^1.4.0",
+    "lodash.debounce": "^4.0.8",
+    "serve": "^14.2.0",
+    "vue": "^3.3.4",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
