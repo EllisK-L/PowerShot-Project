@@ -5,6 +5,9 @@ from django.contrib.auth.models import AbstractUser
 class PSPUser(AbstractUser):
     following = models.ManyToManyField("self", blank=True, symmetrical=False)
     bio = models.CharField(max_length=150, blank=True)
+    phone = models.CharField(max_length=18, blank=True, null=True)
+    phone_valid = models.BooleanField(default=False)
+    phone_code = models.CharField(max_length=100)
 
 class Uploads(models.Model):
     user = models.ForeignKey(PSPUser, on_delete=models.CASCADE)

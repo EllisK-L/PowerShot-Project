@@ -41,7 +41,10 @@ const router = createRouter({
     {
       path: '/user/:username',
       name: 'user',
-      component: () => import('../views/UserView.vue')
+      component: () => import('../views/UserView.vue'),
+      meta: {
+        requireToken: true
+      }
     },
     {
       path: '/post/:username/:post',

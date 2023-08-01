@@ -4,6 +4,8 @@ from api.models import PSPUser
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.password_validation import validate_password
 from .models import Uploads, Comment
+import boto3
+import random
 
 class FollowingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
     following = FollowingSerializer(many=True)
     class Meta:
         model = PSPUser
-        fields = ["first_name","last_name","username","email", "bio", "following"]
+        fields = ["first_name","last_name","username","email", "bio", "following", "phone_code","phone_valid"]
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -29,10 +31,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True, required=True)
     first_name = serializers.CharField(write_only=True, required=True)
     last_name = serializers.CharField(write_only=True, required=True)
+    phone = serializers.CharField(write_only=True)
 
     class Meta:
         model = PSPUser
-        fields = ['username','password','password2','email','first_name','last_name']
+        fields = ['username','password','password2','email','first_name','last_name','phone']
 
     def validate(self, attrs):
         if attrs["password"] != attrs["password2"]:
@@ -40,11 +43,31 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
     
     def create(self, validation_data):
+
+        message_code = random.randint(10001,99999)
+
+        client = boto3.client(
+            "sns",
+            aws_access_key_id="ASIARB7SAAW2JCLWO4LH",
+            aws_secret_access_key="U29qc7+ctkY7ml2u3znvUb5b5W4udC08zzNZqCPK",
+            aws_session_token="FwoGZXIvYXdzEEQaDLpmQ4phdvLCIHvSXiLAAehOqV3F/SHWPF7CyZgeWZtYr3lyo6aK3ie4XJqO37wsF69BqYshsjNxENVSpS0evUKnCn4Q70qFSKUE/FFCoMzQH4LEKow3483nsOqFIJzWD2+qA4ojcfL71QM5LnzR9V7nVBwh4iZZVE7v1zTnaplkwbehzE9o+qFFEpdE4cmSVZrhQI0tLzSpPPit7ZH9/E3E0exzK1UGwQrCt19qpj8ck/gUq4+c0VriFJa4L13GsR1k4hgHcsnuQ6NknnmExyi+2KGmBjItQHvy3GHDQpJjQtOeFU4zHuTeePLO8LANw++Gj8zHuu3HYr3Pr3N5SxFNEz1V",
+            region_name="us-east-1"
+        )
+
+        res = client.publish(
+            PhoneNumber="+"+validation_data["phone"],
+            Message="Your security code is: "+str(message_code)
+        )
+        if res["ResponseMetadata"]["HTTPStatusCode"] != 200:
+            print("ERROR")
+
         user = PSPUser.objects.create(
             username=validation_data["username"],
             email=validation_data["email"],
             first_name=validation_data["first_name"],
-            last_name=validation_data["last_name"]
+            last_name=validation_data["last_name"],
+            phone=validation_data["phone"],
+            phone_code=message_code
         )
 
         user.set_password(validation_data["password"])
