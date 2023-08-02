@@ -6,6 +6,7 @@ from django.contrib.auth.password_validation import validate_password
 from .models import Uploads, Comment
 import boto3
 import random
+import os
 
 class FollowingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,9 +49,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         client = boto3.client(
             "sns",
-            aws_access_key_id="ASIARB7SAAW2JCLWO4LH",
-            aws_secret_access_key="U29qc7+ctkY7ml2u3znvUb5b5W4udC08zzNZqCPK",
-            aws_session_token="FwoGZXIvYXdzEEQaDLpmQ4phdvLCIHvSXiLAAehOqV3F/SHWPF7CyZgeWZtYr3lyo6aK3ie4XJqO37wsF69BqYshsjNxENVSpS0evUKnCn4Q70qFSKUE/FFCoMzQH4LEKow3483nsOqFIJzWD2+qA4ojcfL71QM5LnzR9V7nVBwh4iZZVE7v1zTnaplkwbehzE9o+qFFEpdE4cmSVZrhQI0tLzSpPPit7ZH9/E3E0exzK1UGwQrCt19qpj8ck/gUq4+c0VriFJa4L13GsR1k4hgHcsnuQ6NknnmExyi+2KGmBjItQHvy3GHDQpJjQtOeFU4zHuTeePLO8LANw++Gj8zHuu3HYr3Pr3N5SxFNEz1V",
+            aws_access_key_id=os.environ["aws_access_key_id"],
+            aws_secret_access_key=os.environ["aws_secret_access_key"],
+            aws_session_token=os.environ["aws_session_token"],
             region_name="us-east-1"
         )
 

@@ -25,12 +25,12 @@
 
             <div class="ps-row">
             <label for="password1">Password: </label>
-            <input type="text" id="password1" name="password1" v-model="password1">
+            <input type="password" id="password1" name="password1" v-model="password1">
             </div>
 
             <div class="ps-row">
             <label for="password2">Confirm Password: </label>
-            <input type="text" id="password2" name="password2" v-model="password2">
+            <input type="password" id="password2" name="password2" v-model="password2">
             </div>
 
             <div class="ps-row">

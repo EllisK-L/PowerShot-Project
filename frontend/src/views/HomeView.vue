@@ -2,6 +2,7 @@
   <main>
       <h1>Posts From Following</h1>
       <ImageList @postUpdate="get_posts()" :images="sorted_posts" :token="token" :username="username" />
+      <h2 v-if="sorted_posts.length == 0">Not following anyone</h2>
   </main>
 </template>
 <script>

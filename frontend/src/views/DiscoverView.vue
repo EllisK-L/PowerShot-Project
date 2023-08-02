@@ -1,6 +1,6 @@
 <template>
     <main>
-        <h1>Posts From Following</h1>
+        <h1>Posts From All</h1>
         <ImageList @postUpdate="get_posts()" :images="sorted_posts" :token="token" :username="username" />
     </main>
   </template>
@@ -18,7 +18,6 @@
     },
     methods: {
       get_posts(){
-        if(this.user_data.following != undefined){
           const url = `${this.uri}/api/uploads/`
               axios.get(url)
               .then((data) => {
@@ -38,10 +37,6 @@
                     }
                   })
               })
-        }
-        else{
-          console.log("UNDEFINED")
-        }
       }
     },
     mounted(){
